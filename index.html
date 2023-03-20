@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Knight In Shining Armor!</title>
+</head>
+<body>
+    <script>
+        const Knight = function() {
+            this.position = null;
+            setKnightPos = (array) => {
+                this.position = new Node(array);
+            }
+            knightMoves = (endBlock) => {
+                console.log("Moving to...");
+            }
+            possibleFirstMoves = () => {
+
+            }
+        }
+
+        const Node = function(array) {
+            this.location = array;
+            this.legalMoves = null;//type Node
+        }
+
+        const moveTree = function() {
+            this.root = null;//type Node
+            this.buildTree = (startBlock, endBlock) => {
+            }
+        }
+
+        const gameBoard = function() {
+            this.board = null;
+            buildBoard = () => {
+                let cols = 7;
+                let rows = 7;
+                let boardStr= '';
+                for(let i = 0; i<=cols; i++){
+                    for (let j = 0; j<=rows; j++) {
+                        boardStr += '[]';
+                    }
+                    boardStr += '\n';
+                }
+                this.board = boardStr;
+                return boardStr;
+            }
+        }
+
+        let startingPos = [2,2];
+        const firstKnight = new Knight();
+        setKnightPos(startingPos);
+        console.log(firstKnight.position);
+        //knightMoves([1,2]);
+        const firstBoard = new gameBoard();
+        buildBoard();
+        console.log(firstBoard.board);
+    </script>
+</body>
+</html>
