@@ -10,7 +10,6 @@
     <script>
         const Knight = function(array) {
             this.position = array;
-            this.squareSittingOn = null;
             this.moveSet = [];
             //consider Knight a Node (1st one can be assigned as gameBoard.root)
             //each Knight node can have a max of 8 possible moves aftewards
@@ -19,7 +18,8 @@
 
         const Square = function(string) {
             this.name = string;
-            this.visited = null;
+            this.visited = false;
+            this.jumpNumber = null;
         }
 
         const gameBoard = function() {
@@ -116,157 +116,86 @@
                 this.root = new Knight(array);
             }
 
-            /* moveTesting = (node, target) => {//start @ [3,3] target [5,4]
-                if (node.position[0] === target[0] && node.position[1] === target[1]) {//can't check array === array
-                    console.log("We found a matching target!");
-                    return;
-                } else {
-                    makeNextMoveNodes(node);
+            fillingMovesIterator = () => {
 
-                    let startNodeArray = node.position;//take node's position array
-                    console.log("node's position array within moveTesting: ", startNodeArray);
-                    let firstArray = initialPossibleMove(startNodeArray);//legal moves array
-                    firstArray.forEach(el => {//makes new Nodes for all initial possible moves
-                        let newKnight = new Knight(el);
-                        //console.log(newKnight);
-                        node.moveSet.push(newKnight);
+                let counter = 0;
+
+                iteratingFxn = (node) => {//input type Node
+                    let firstMoves = initialPossibleMove(node.position);
+                    firstMoves.forEach(el => {
+                    //create a new "Knight" Node
+                    let newKnight = new Knight(el);
+                    //push said Node into moveSet of root Knight so it's traceable 
+                    node.moveSet.push(newKnight);
+                    //find corresponding square for new Knight/jump iteration
+                    let correspondingSq = findSquare(el);
+                    //mark that square visited along with the # of jumps it took to get there
+                    correspondingSq.visited = true;
+                    correspondingSq.jumpNumber = counter;
                     })
-                    console.log("This iteration's node legal moves within moveTesting: ", node);
-                    //node.moveSet.forEach(knight => {//type Node
-                    //    moveTesting(knight, target);
-                    //})
-                    return node;//returns node with moveSet of legal moves
                 }
+
+                let startNode = this.root;
+                //first "iteration" is which squares can be reached w/ 0 jumps
+                //AKA only the start square/block
+                //first node, 1st level, 0 moveSets in
+                let firstSq = findSquare(startNode.position);
+                firstSq.visited = true;
+                firstSq.jumpNumber = 0;
+                counter++;
                 
-            } */
+                //2nd "iteration" is which sq w/ 1 jump
+                //if not on the edge, this is 8 children of initial root/start
+                //2nd "level" nodes, 1 moveSet in
+                iteratingFxn(startNode);
+                counter++;
 
-            levelOrderWithin = (node, Qarray, target) => {
-                //array = Q
-                Qarray.push(node); //push first node (startNode/root)
+                //3rd - squares w/ 2 jumps
+                //find possible moves of each child within root Knight moveSet
+                //3rd "level" nodes, 2 moveSets in
+                startNode.moveSet.forEach(ek => {//for each Node within an array of Nodes
+                    iteratingFxn(ek);
+                })
+                counter++;
 
-                /* console.log("Qarray is ", Qarray);
-                let doNode = Qarray[0]; //type Node
-                let doNodeArray = doNode.moveSet;
-                console.log("for this iteration, doNode is ", doNode);
-                console.log("doNodeArray is ", doNodeArray); */
-
-                //----------------
-                //everything within this part, I want to do again
-                //for each node I access within the Q
-                let i = 0;
-                do {
-                    let doNode = Qarray[i]; //type Node
-                    console.log("for this iteration, doNode is ", doNode);
-                    doNode.squareSittingOn.visited = true;
-                    if (doNode.position[0] === target[0] && doNode.position[1] === target[1]) {//can't check array === array
-                        console.log("We found a matching target!");
-                        return doNode;
+                //4th - 3 jumps squares
+                //4th "level" nodes, 3 moveSets in
+                let startMoveSetLength = startNode.moveSet.length - 1;
+                for (let i = 0; i < startMoveSetLength; i++) {
+                    if (startNode.moveSet[i].moveSet.length === 0) {
+                        return;
                     } else {
-                        let doNodeArray = doNode.moveSet;
-                        if (doNodeArray.length !== 0) {//if there is something within moveSet
-                            doNodeArray.forEach(el => {//take each element (type Node) and push it into Q
-                                //console.log("element pushed is ", el);
-                                Qarray.push(el);
-                            })
+                        startNode.moveSet[i].moveSet.forEach(ej => {
+                            iteratingFxn(ej);
+                        })
+                    }
+                }
+                counter++;
+
+                //5th - 4 jumps; not many left
+                for (let i = 0; i < startMoveSetLength; i++) {
+                    if (startNode.moveSet[i].moveSet.length === 0) {
+                        return;
+                    } else {
+                        let innerMoveSetLength = startNode.moveSet[i].moveSet.length - 1;
+                        for (let k = 0; k < innerMoveSetLength; k++) {
+                            if (startNode.moveSet[i].moveSet[k].moveSet.length === 0) {
+                                return;
+                            } else {
+                                startNode.moveSet[i].moveSet[k].moveSet.forEach(em => {
+                                iteratingFxn(em);
+                                }) 
+                            }
                         }
                     }
-                    //moves to next node in Q
-                    i++;
-                } while (i < Qarray.length);
-
-                let qLength = Qarray.length - 1;
-                while (qLength >= 0) {
-                    if (Qarray[qLength].moveSet.length !== 0) {//something within moveSet, don't need it in the Q
-                        Qarray.splice(qLength, 1);
-                    }
-                    qLength--;
-                }
-
-                return Qarray;
-            }       
-
-            buildTree = (targetSpace) => {//build tree from start node
-                //make first level of children, check if any node equals targetSpace (type Array)
-                //if not, repeat until target is reached 
-                let startNode = this.root;
-                let queueArray = [];
-                let testResult = breadthFirst(startNode, queueArray, targetSpace);
-                //console.log(testResult);
-
-                return;
-                ////-----------------Want to do all this again IF checkBreadth does NOT return a Node
-                //for each node/step/level, create their child nodes 
-                /* let childNodesMade = makeNextMoveNodes(startNode);//returns same node w/ populated moveSet
-                console.log("childNodesMade: ", childNodesMade); */
-                //THEN, breadth first, check that same level for if any of the child nodes match targetSpace
-                /* let checkBreadth = levelOrderWithin(childNodesMade, queueArray, targetSpace);
-                //levelOrderWithin will search childNodesMade & its moveSet; will go breadth first
-                //if node that matches targetSpace is found, returns said node
-                //otherwise, returns null
-                console.log(checkBreadth);
-                 */
-                ////----------------
-            }
-
-            checkNodesQ = (array, target) => {
-                let length = array.length - 1;
-                for (let i = 0; i < length; i++) {
-                    let childNodesMade = makeNextMoveNodes(array[i]);
-                    console.log("childNodesMade in checkNodesQ: ", childNodesMade);
-                    let checkingChildNodes = checkChildrenNodes(childNodesMade, target);
-                    if (checkingChildNodes !== null) {
-                        return;
-                    }
                 }
             }
 
-            checkChildrenNodes = (node, target) => {
-                let numberOfChildrenNodes = node.moveSet.length - 1;
-                for (let i = 0; i < numberOfChildrenNodes; i++) {
-                    console.log("checking node : ", node.moveSet[i]);
-                    node.moveSet[i].squareSittingOn.visited = true;
-                    if (node.moveSet[i].position[0] === target[0] && node.moveSet[i].position[1] === target[1])
-                    return node.moveSet[i];
-                }
-                return null;
+            knightMoves = (array) => {//input is [x,y]
+                let numberOfJumps = findSquare(array).jumpNumber;
+                console.log(numberOfJumps);
             }
 
-            function breadthFirst(startingNode, array, target) {
-                startingNode.squareSittingOn = findSquare(startingNode.position);
-                let childNodesMade = makeNextMoveNodes(startingNode);//returns same node w/ populated moveSet
-                //moveSet will only allow squares that have NOT been visited (& on the board)
-                console.log("childNodesMade: ", childNodesMade);
-                let updatedQ = levelOrderWithin(childNodesMade, array, target);
-                console.log(updatedQ); //returns Q after de-Q'ing any that have a moveSet (don't need to iterate it again)
-                
-                checkNodesQ(updatedQ, target);
-                    //for each child Node within startingNode's moveSet
-                    //I want to ONLY makeNextMoveNodes & levelOrderWithin it once
-                    //if both of those go through without incident
-                    //after passing ALL of startingNode's initial moveSet
-                    //then I can go "deeper" into the children of init moveSet
-                    
-                ////////need to find a way (maybe without forEach) so that the BREADTH portion will happen
-                //before it goes deeper within the loop and keeps going....
-                
-            }
-            //takes node; creates array from initialPossibleMove(node.position) & 
-            makeNextMoveNodes = (node) => {//adds children "next moves" nodes from said array to node
-
-                let array = initialPossibleMove(node.position);
-                array.forEach(el => {
-                    let newChild = new Knight(el);
-                    let foundSquare = findSquare(el);
-                    newChild.squareSittingOn = foundSquare;
-                    node.moveSet.push(newChild);
-                })
-                return node;
-            }
-
-            knightMoves = (startBlock, endBlock) => {
-                this.root = new Knight(startBlock);
-                console.log("Moving to...");
-            }
             driveFunct = () => {
                 let startingPos = [3,3];
                 let targetSpace = [6,6];
@@ -275,15 +204,14 @@
                 buildBoard();
                 //console.log(firstBoard.board);
                 setStartNode(startingPos);//makes a Knight node for this.root
+
+                fillingMovesIterator();
+                console.log(firstBoard.board);
                 console.log("root Knight: ", this.root);
-                
-                //makeNextMoveNodes(this.root);
-                buildTree(targetSpace);
-                console.log(this.root);
+                knightMoves([6,6]);
             }
         }
 
-        //knightMoves([1,2]);
         const firstBoard = new gameBoard();
         driveFunct();
     </script>
