@@ -25,6 +25,7 @@
         const gameBoard = function() {
             this.consoleBoard = null;
             this.board = [];
+            this.boolean = null;
             this.root = null;//type Node; will be initial Knight starting position
             buildBoard = () => {
                 let cols = 7;
@@ -191,14 +192,59 @@
                 }
             }
 
+            contains = (node, array) => {
+                //node being inputted node (will use later for subtrees to specify)
+                //array being target array [x,y]
+
+                //BASE CASE: if node's position is equal to "array" position/point
+                if (node.position[0] === array[0] && node.position[1] === array[1]) {
+                    console.log("This node itself is matching the target!", node);
+                    return true;
+                } else if (node.moveSet.length === 0) {
+                    //console.log("This node doesn't have any children :(");
+                    return;
+                } else {
+
+                    /* const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+                    for (const el of arr) {
+                        console.log(el);
+                        if (el === 5) {
+                            break;
+                        }
+                    } */
+
+                    for (const el of node.moveSet) {
+                        console.log(el);
+                        let result = contains(el, array);
+                        console.log("result is: ", result);
+                        if (result === true) {
+                            break;
+                        }
+                    }
+
+                    /* node.moveSet.some(function(el) {
+                        console.log("running a .some now");
+                        let result = contains(el, array);
+                        return result === true;
+                    }) */
+                    /* node.moveSet.forEach(child => {
+                        return contains(child, array);
+                    }) */
+                }
+            }
+
             knightMoves = (array) => {//input is [x,y]
                 let numberOfJumps = findSquare(array).jumpNumber;
-                console.log(numberOfJumps);
+                console.log("It takes this many # of jumps: ", numberOfJumps);
+                let startNode = this.root;
+                console.log(contains(startNode, array));
+                //contains will either return true or false
+                //traverse from startNode through it's moveSet to children
             }
 
             driveFunct = () => {
                 let startingPos = [3,3];
-                let targetSpace = [6,6];
+                //let targetSpace = [6,6];
                 buildConsoleBoard();
                 //console.log(firstBoard.consoleBoard);
                 buildBoard();
