@@ -5,8 +5,49 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A Knight In Shining Armor!</title>
+    <style>
+        input {
+            margin: 25px;
+            width: 2.5rem;
+        }
+        div.box {
+            margin-top: 25px;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+        div.box1 {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
+    <div class="box">
+            <img src="https://github.com/JeffLi117/Knight-In-Shining-Armor/blob/main/chessboard.png?raw=true" alt="chess board">
+            <img src="https://github.com/JeffLi117/Knight-In-Shining-Armor/blob/main/knightmoves.jpg?raw=true" alt="knight moves">
+    </div>
+    <div class="box">
+        <div class="box1">
+            <div>START POSITION:<br>Please provide an x (0-7) and y (0-7) coordinate;<br>ex: 23 = coordinate [2,3]</div>
+            <input type="text" id="startInput">
+        </div>
+        <div class="box1">
+            <div>TARGET POSITION:<br>Please provide an x (0-7) and y (0-7) coordinate;<br>ex: 54 = coordinate [5,4]</div>
+            <input type="text" id="targetInput">
+        </div>
+    </div>
+
+    <div class="box1">
+        <button type="button" id="runFunct">Find path!</button>
+        <br>
+        <div id="result"></div>
+    </div>
+
     <script>
         const Knight = function(array) {
             this.position = array;
@@ -212,17 +253,20 @@
                 let holderArray = [];
                 let arrayToFlip = targetSqToStart(targetSq, holderArray);
                 let length = arrayToFlip.length - 1;
+                let textBox = document.getElementById("result");
+                textBox.innerHTML = `Starting position: [${this.root.position}]; target: [${array}]<br>You made it in ${numberOfJumps} move(s)! Here's the path:<br>`
                 for (let i = length; i >= 0; i--) {
                     console.log(arrayToFlip[i]);
+                    textBox.innerHTML += `${arrayToFlip[i]}<br>`
                 }
             }
 
             driverFunct = () => {
-                let testStart = prompt("START POSITION:\nPlease provide an x (0-7) and y (0-7) coordinate; ex: 23 = coordinate [2,3]");
+                let testStart = document.getElementById("startInput").value;
                 let strSplit = testStart.split("");
                 let testStartArray = [Number(strSplit[0]), Number(strSplit[1])];
                 console.log(testStartArray);
-                let testTarget = prompt("TARGET POSITION:\nPlease provide an x (0-7) and y (0-7) coordinate; ex: 54 = coordinate [5,4]");
+                let testTarget = document.getElementById("targetInput").value;
                 let strTargSplit = testTarget.split("");
                 let testTargetArray = [Number(strTargSplit[0]), Number(strTargSplit[1])];
                 console.log(testTargetArray);
@@ -240,8 +284,12 @@
             }
         }
 
-        const firstBoard = new gameBoard();
-        driverFunct();
+        const firstBoard = new gameBoard();      
+        
+        const goButton = document.getElementById("runFunct");
+        goButton.addEventListener('click', e => {
+            driverFunct();
+        })
     </script>
 </body>
 </html>
