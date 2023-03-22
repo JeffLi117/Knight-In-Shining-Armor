@@ -11,8 +11,6 @@
         const Knight = function(array) {
             this.position = array;
             this.moveSet = [];
-            //consider Knight a Node (1st one can be assigned as gameBoard.root)
-            //each Knight node can have a max of 8 possible moves aftewards
         }
 
 
@@ -20,14 +18,14 @@
             this.name = string;
             this.visited = false;
             this.jumpNumber = null;
-            this.previousSq = null;//type Node
+            this.previousSq = null;
         }
 
         const gameBoard = function() {
             this.consoleBoard = null;
             this.board = [];
             this.boolean = null;
-            this.root = null;//type Node; will be initial Knight starting position
+            this.root = null;
             buildBoard = () => {
                 let cols = 7;
                 let rows = 7;
@@ -169,14 +167,6 @@
                             }
                             a++;
                         } while (a < length1)
-
-                        /* for (let a = 0; a < length1; a++) {
-                            let newArrays = iteratingFxn(inputArray[a]);
-                            //console.log("newArrays is: ", newArrays);
-                            if (newArrays.length > 0) {
-                                array2 = array2.concat(newArrays);
-                            }
-                        } */
                     counter++;
                     console.log("array2 is: ", array2);
                     };
@@ -198,109 +188,6 @@
                 let eighthIt = anotherBreadth(seventhIt);
                 console.log("eighthIt: ", eighthIt);
 
-                
-                /* 
-                //2nd "iteration" is which sq w/ 1 jump
-                //if not on the edge, this is 8 children of initial root/start
-                //2nd "level" nodes, 1 moveSet in
-                let array1 = iteratingFxn(startNode);
-                counter++;
-                //console.log("array1 is: ", array1);
- 
-                //3rd - squares w/ 2 jumps
-                //find possible moves of each child within root Knight moveSet
-                //3rd "level" nodes, 2 moveSets in
-
-
-                let array2 = [];
-                if (array1.length > 0) {
-                    let length1 = array1.length - 1;
-                    for (let a = 0; a < length1; a++) {
-                        let newArrays = iteratingFxn(array1[a]);
-                        //console.log("newArrays is: ", newArrays);
-                        if (newArrays.length > 0) {
-                            array2 = array2.concat(newArrays);
-                        }
-                    }
-                counter++;
-                console.log("array2 is: ", array2);
-                };
-
-                //4th - 3 jumps squares
-                //4th "level" nodes, 3 moveSets in
-                let array3 = [];
-                if (array2.length > 0) {
-                    let length2 = array2.length - 1;
-                    for (let b = 0; b < length2; b++) {
-                        let newArrays = iteratingFxn(array2[b]);
-                        //console.log("newArrays is: ", newArrays);
-                        if (newArrays.length > 0) {
-                            array3 = array3.concat(newArrays);
-                        }
-                    }
-                counter++;
-                console.log("array3 is: ", array3);
-                }
-
-                //5th - 4 jumps squares
-                let array4 = [];
-                if (array3.length > 0) {
-                    let length3 = array3.length - 1;
-                    for (let c = 0; c < length3; c++) {
-                        let newArrays = iteratingFxn(array3[c]);
-                        //console.log("newArrays is: ", newArrays);
-                        if (newArrays.length > 0) {
-                            array4 = array4.concat(newArrays);
-                        }
-                    }
-                counter++;
-                console.log("array4 is: ", array4);
-                }
-
-                //6th - 5 jumps
-                let array5 = [];
-                if (array4.length > 0) {
-                    let length4 = array4.length - 1;
-                    for (let d = 0; d < length4; d++) {
-                        let newArrays = iteratingFxn(array4[d]);
-                        //console.log("newArrays is: ", newArrays);
-                        if (newArrays.length > 0) {
-                            array5 = array5.concat(newArrays);
-                        }
-                    }
-                counter++;
-                console.log("array5 is: ", array5);
-                }
-
-                //7th - 6 jumps
-                let array6 = [];
-                if (array5.length > 0) {
-                    let length5 = array5.length - 1;
-                    for (let e = 0; e < length5; e++) {
-                        let newArrays = iteratingFxn(array5[e]);
-                        //console.log("newArrays is: ", newArrays);
-                        if (newArrays.length > 0) {
-                            array6 = array6.concat(newArrays);
-                        }
-                    }
-                counter++;
-                console.log("array6 is: ", array6);
-                }
-
-                //8th - 7 jumps
-                let array7 = [];
-                if (array6.length > 0) {
-                    let length6 = array6.length - 1;
-                    for (let f = 0; f < length6; f++) {
-                        let newArrays = iteratingFxn(array6[f]);
-                        //console.log("newArrays is: ", newArrays);
-                        if (newArrays.length > 0) {
-                            array7 = array7.concat(newArrays);
-                        }
-                    }
-                counter++;
-                console.log("array7 is: ", array7);
-                } */
             }
 
             function targetSqToStart(targetSquare, array) {
@@ -333,9 +220,8 @@
             driverFunct = () => {
                 let startingPos = [0,0]; //--------------CHANGE START POINT (pls keep within board)
                 buildConsoleBoard();
-                //console.log(firstBoard.consoleBoard);
                 buildBoard();
-                //console.log(firstBoard.board);
+                
                 setStartNode(startingPos);//makes a Knight node for this.root
 
                 fillingMovesIterator();
