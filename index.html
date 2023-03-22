@@ -121,25 +121,32 @@
             fillingMovesIterator = () => {
 
                 let counter = 0;
+                let testArray = [];
 
                 iteratingFxn = (node) => {//input type Node
+                    let someArray = [];
                     let nodeSq = findSquare(node.position);
                     let firstMoves = initialPossibleMove(node.position);
-                    firstMoves.forEach(el => {
-                    //create a new "Knight" Node
-                    let newKnight = new Knight(el);
-                    //push said Node into moveSet of root Knight so it's traceable 
-                    node.moveSet.push(newKnight);
-                    //find corresponding square for new Knight/jump iteration
-                    let correspondingSq = findSquare(el);
-                    correspondingSq.previousSq = nodeSq;
-                    //mark that square visited along with the # of jumps it took to get there
-                    correspondingSq.visited = true;
-                    correspondingSq.jumpNumber = counter;
-                    })
+                    if (firstMoves.length > 0) {//if this node has possible moves/child nodes
+                        firstMoves.forEach(el => {
+                            //create a new "Knight" Node
+                            let newKnight = new Knight(el);
+                            someArray.push(newKnight);
+                            //push said Node into moveSet of root Knight so it's traceable 
+                            node.moveSet.push(newKnight);
+                            //find corresponding square for new Knight/jump iteration
+                            let correspondingSq = findSquare(el);
+                            correspondingSq.previousSq = nodeSq;
+                            //mark that square visited along with the # of jumps it took to get there
+                            correspondingSq.visited = true;
+                            correspondingSq.jumpNumber = counter;
+                        })
+                    } 
+                    return someArray;
                 }
 
                 let startNode = this.root;
+                testArray.push(startNode);
                 //first "iteration" is which squares can be reached w/ 0 jumps
                 //AKA only the start square/block
                 //first node, 1st level, 0 moveSets in
@@ -147,52 +154,153 @@
                 firstSq.visited = true;
                 firstSq.jumpNumber = 0;
                 counter++;
+
+                function anotherBreadth(inputArray) {
+                    let array2 = [];
+                    if (inputArray.length > 0) {
+                        let length1 = inputArray.length - 1;
+
+                        let a = 0;
+                        do {
+                            let newArrays = iteratingFxn(inputArray[a]);
+                            console.log("newArrays is: ", newArrays);
+                            if (newArrays.length > 0) {
+                                array2 = array2.concat(newArrays);
+                            }
+                            a++;
+                        } while (a < length1)
+
+                        /* for (let a = 0; a < length1; a++) {
+                            let newArrays = iteratingFxn(inputArray[a]);
+                            //console.log("newArrays is: ", newArrays);
+                            if (newArrays.length > 0) {
+                                array2 = array2.concat(newArrays);
+                            }
+                        } */
+                    counter++;
+                    console.log("array2 is: ", array2);
+                    };
+                    return array2;
+                }
+
+                let secondIt = anotherBreadth(testArray);
+                console.log("secondIt: ", secondIt);
+                let thirdIt = anotherBreadth(secondIt);
+                console.log("thirdIt: ", thirdIt);
+                let fourthIt = anotherBreadth(thirdIt);
+                console.log("fourthIt: ", fourthIt);
+                let fifthIt = anotherBreadth(fourthIt);
+                console.log("fifthIt: ", fifthIt);
+                let sixthIt = anotherBreadth(fifthIt);
+                console.log("sixthIt: ", sixthIt);
+                let seventhIt = anotherBreadth(sixthIt);
+                console.log("seventhIt: ", seventhIt);
+                let eighthIt = anotherBreadth(seventhIt);
+                console.log("eighthIt: ", eighthIt);
+
                 
+                /* 
                 //2nd "iteration" is which sq w/ 1 jump
                 //if not on the edge, this is 8 children of initial root/start
                 //2nd "level" nodes, 1 moveSet in
-                iteratingFxn(startNode);
+                let array1 = iteratingFxn(startNode);
                 counter++;
-
+                //console.log("array1 is: ", array1);
+ 
                 //3rd - squares w/ 2 jumps
                 //find possible moves of each child within root Knight moveSet
                 //3rd "level" nodes, 2 moveSets in
-                startNode.moveSet.forEach(ek => {//for each Node within an array of Nodes
-                    iteratingFxn(ek);
-                })
+
+
+                let array2 = [];
+                if (array1.length > 0) {
+                    let length1 = array1.length - 1;
+                    for (let a = 0; a < length1; a++) {
+                        let newArrays = iteratingFxn(array1[a]);
+                        //console.log("newArrays is: ", newArrays);
+                        if (newArrays.length > 0) {
+                            array2 = array2.concat(newArrays);
+                        }
+                    }
                 counter++;
+                console.log("array2 is: ", array2);
+                };
 
                 //4th - 3 jumps squares
                 //4th "level" nodes, 3 moveSets in
-                let startMoveSetLength = startNode.moveSet.length - 1;
-                for (let i = 0; i < startMoveSetLength; i++) {
-                    if (startNode.moveSet[i].moveSet.length === 0) {
-                        return;
-                    } else {
-                        startNode.moveSet[i].moveSet.forEach(ej => {
-                            iteratingFxn(ej);
-                        })
-                    }
-                }
-                counter++;
-
-                //5th - 4 jumps; not many left
-                for (let i = 0; i < startMoveSetLength; i++) {
-                    if (startNode.moveSet[i].moveSet.length === 0) {
-                        return;
-                    } else {
-                        let innerMoveSetLength = startNode.moveSet[i].moveSet.length - 1;
-                        for (let k = 0; k < innerMoveSetLength; k++) {
-                            if (startNode.moveSet[i].moveSet[k].moveSet.length === 0) {
-                                return;
-                            } else {
-                                startNode.moveSet[i].moveSet[k].moveSet.forEach(em => {
-                                iteratingFxn(em);
-                                }) 
-                            }
+                let array3 = [];
+                if (array2.length > 0) {
+                    let length2 = array2.length - 1;
+                    for (let b = 0; b < length2; b++) {
+                        let newArrays = iteratingFxn(array2[b]);
+                        //console.log("newArrays is: ", newArrays);
+                        if (newArrays.length > 0) {
+                            array3 = array3.concat(newArrays);
                         }
                     }
+                counter++;
+                console.log("array3 is: ", array3);
                 }
+
+                //5th - 4 jumps squares
+                let array4 = [];
+                if (array3.length > 0) {
+                    let length3 = array3.length - 1;
+                    for (let c = 0; c < length3; c++) {
+                        let newArrays = iteratingFxn(array3[c]);
+                        //console.log("newArrays is: ", newArrays);
+                        if (newArrays.length > 0) {
+                            array4 = array4.concat(newArrays);
+                        }
+                    }
+                counter++;
+                console.log("array4 is: ", array4);
+                }
+
+                //6th - 5 jumps
+                let array5 = [];
+                if (array4.length > 0) {
+                    let length4 = array4.length - 1;
+                    for (let d = 0; d < length4; d++) {
+                        let newArrays = iteratingFxn(array4[d]);
+                        //console.log("newArrays is: ", newArrays);
+                        if (newArrays.length > 0) {
+                            array5 = array5.concat(newArrays);
+                        }
+                    }
+                counter++;
+                console.log("array5 is: ", array5);
+                }
+
+                //7th - 6 jumps
+                let array6 = [];
+                if (array5.length > 0) {
+                    let length5 = array5.length - 1;
+                    for (let e = 0; e < length5; e++) {
+                        let newArrays = iteratingFxn(array5[e]);
+                        //console.log("newArrays is: ", newArrays);
+                        if (newArrays.length > 0) {
+                            array6 = array6.concat(newArrays);
+                        }
+                    }
+                counter++;
+                console.log("array6 is: ", array6);
+                }
+
+                //8th - 7 jumps
+                let array7 = [];
+                if (array6.length > 0) {
+                    let length6 = array6.length - 1;
+                    for (let f = 0; f < length6; f++) {
+                        let newArrays = iteratingFxn(array6[f]);
+                        //console.log("newArrays is: ", newArrays);
+                        if (newArrays.length > 0) {
+                            array7 = array7.concat(newArrays);
+                        }
+                    }
+                counter++;
+                console.log("array7 is: ", array7);
+                } */
             }
 
             function targetSqToStart(targetSquare, array) {
@@ -223,7 +331,7 @@
             }
 
             driverFunct = () => {
-                let startingPos = [3,3]; //--------------CHANGE START POINT
+                let startingPos = [0,0]; //--------------CHANGE START POINT (pls keep within board)
                 buildConsoleBoard();
                 //console.log(firstBoard.consoleBoard);
                 buildBoard();
@@ -233,7 +341,8 @@
                 fillingMovesIterator();
                 console.log(firstBoard.board);
                 console.log("root Knight: ", this.root);
-                knightMoves([4,3]); //------------------CHANGE TARGET POINT
+                knightMoves([7,6]); //------------------CHANGE TARGET POINT (pls keep within board)
+                
             }
         }
 
