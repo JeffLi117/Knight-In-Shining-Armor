@@ -20,6 +20,7 @@
             this.name = string;
             this.visited = false;
             this.jumpNumber = null;
+            this.previousSq = null;//type Node
         }
 
         const gameBoard = function() {
@@ -122,6 +123,7 @@
                 let counter = 0;
 
                 iteratingFxn = (node) => {//input type Node
+                    let nodeSq = findSquare(node.position);
                     let firstMoves = initialPossibleMove(node.position);
                     firstMoves.forEach(el => {
                     //create a new "Knight" Node
@@ -130,6 +132,7 @@
                     node.moveSet.push(newKnight);
                     //find corresponding square for new Knight/jump iteration
                     let correspondingSq = findSquare(el);
+                    correspondingSq.previousSq = nodeSq;
                     //mark that square visited along with the # of jumps it took to get there
                     correspondingSq.visited = true;
                     correspondingSq.jumpNumber = counter;
@@ -192,59 +195,35 @@
                 }
             }
 
-            contains = (node, array) => {
-                //node being inputted node (will use later for subtrees to specify)
-                //array being target array [x,y]
+            function targetSqToStart(targetSquare, array) {
 
-                //BASE CASE: if node's position is equal to "array" position/point
-                if (node.position[0] === array[0] && node.position[1] === array[1]) {
-                    console.log("This node itself is matching the target!", node);
-                    return true;
-                } else if (node.moveSet.length === 0) {
-                    //console.log("This node doesn't have any children :(");
-                    return;
+                let initStrSplit = targetSquare.name.split("");
+                let position = [Number(initStrSplit[1]), Number(initStrSplit[3])];
+                array.push(position);
+
+                if (targetSquare.previousSq === null) {
+                    return array;
                 } else {
-
-                    /* const arr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-                    for (const el of arr) {
-                        console.log(el);
-                        if (el === 5) {
-                            break;
-                        }
-                    } */
-
-                    for (const el of node.moveSet) {
-                        console.log(el);
-                        let result = contains(el, array);
-                        console.log("result is: ", result);
-                        if (result === true) {
-                            break;
-                        }
-                    }
-
-                    /* node.moveSet.some(function(el) {
-                        console.log("running a .some now");
-                        let result = contains(el, array);
-                        return result === true;
-                    }) */
-                    /* node.moveSet.forEach(child => {
-                        return contains(child, array);
-                    }) */
+                    return targetSqToStart(targetSquare.previousSq, array);
                 }
             }
 
             knightMoves = (array) => {//input is [x,y]
-                let numberOfJumps = findSquare(array).jumpNumber;
-                console.log("It takes this many # of jumps: ", numberOfJumps);
-                let startNode = this.root;
-                console.log(contains(startNode, array));
-                //contains will either return true or false
-                //traverse from startNode through it's moveSet to children
+
+                let targetSq = findSquare(array);
+                let numberOfJumps = targetSq.jumpNumber;
+                console.log(`Starting position: [${this.root.position}]; target: [${array}]`);
+                console.log(`You made it in ${numberOfJumps} move(s)! Here's the path:`);
+                let holderArray = [];
+                let arrayToFlip = targetSqToStart(targetSq, holderArray);
+                let length = arrayToFlip.length - 1;
+                for (let i = length; i >= 0; i--) {
+                    console.log(arrayToFlip[i]);
+                }
             }
 
-            driveFunct = () => {
-                let startingPos = [3,3];
-                //let targetSpace = [6,6];
+            driverFunct = () => {
+                let startingPos = [3,3]; //--------------CHANGE START POINT
                 buildConsoleBoard();
                 //console.log(firstBoard.consoleBoard);
                 buildBoard();
@@ -254,12 +233,12 @@
                 fillingMovesIterator();
                 console.log(firstBoard.board);
                 console.log("root Knight: ", this.root);
-                knightMoves([6,6]);
+                knightMoves([4,3]); //------------------CHANGE TARGET POINT
             }
         }
 
         const firstBoard = new gameBoard();
-        driveFunct();
+        driverFunct();
     </script>
 </body>
 </html>
