@@ -82,7 +82,7 @@
                 let newY8 = y + 2;
                 let eighthMove = [newX8, newY8];
                 let all8PossibleMoves = [firstMove, secondMove, thirdMove, fourthMove, fifthMove, sixthMove, seventhMove, eighthMove];
-                console.log("all8PossibleMoves are ", all8PossibleMoves);
+                //console.log("all8PossibleMoves are ", all8PossibleMoves);
                 let index = all8PossibleMoves.length - 1;
                 while (index >= 0) {
                     if (all8PossibleMoves[index][0] < 0 || all8PossibleMoves[index][0] > 7 || 
@@ -92,7 +92,7 @@
                     index--;
                 }
                 let legalMoves = all8PossibleMoves;//after reverse while loop, moves that go off the board are removed
-                console.log("legalMoves are ", legalMoves);
+                //console.log("legalMoves are ", legalMoves);
                 //narrow down to only squares that have NOT been visited
                 let squareIndex = legalMoves.length - 1;
                 while (squareIndex >= 0) {
@@ -102,7 +102,7 @@
                     squareIndex--;
                 }
                 let freeLegalMoves = legalMoves;
-                console.log("freeLegalMoves are ", freeLegalMoves);
+                //console.log("freeLegalMoves are ", freeLegalMoves);
                 return freeLegalMoves;//type Array
             }
 
@@ -161,32 +161,32 @@
                         let a = 0;
                         do {
                             let newArrays = iteratingFxn(inputArray[a]);
-                            console.log("newArrays is: ", newArrays);
+                            //console.log("newArrays is: ", newArrays);
                             if (newArrays.length > 0) {
                                 array2 = array2.concat(newArrays);
                             }
                             a++;
                         } while (a < length1)
                     counter++;
-                    console.log("array2 is: ", array2);
+                    //console.log("array2 is: ", array2);
                     };
                     return array2;
                 }
 
                 let secondIt = anotherBreadth(testArray);
-                console.log("secondIt: ", secondIt);
+                //console.log("secondIt: ", secondIt);
                 let thirdIt = anotherBreadth(secondIt);
-                console.log("thirdIt: ", thirdIt);
+                //console.log("thirdIt: ", thirdIt);
                 let fourthIt = anotherBreadth(thirdIt);
-                console.log("fourthIt: ", fourthIt);
+                //console.log("fourthIt: ", fourthIt);
                 let fifthIt = anotherBreadth(fourthIt);
-                console.log("fifthIt: ", fifthIt);
+                //console.log("fifthIt: ", fifthIt);
                 let sixthIt = anotherBreadth(fifthIt);
-                console.log("sixthIt: ", sixthIt);
+                //console.log("sixthIt: ", sixthIt);
                 let seventhIt = anotherBreadth(sixthIt);
-                console.log("seventhIt: ", seventhIt);
+                //console.log("seventhIt: ", seventhIt);
                 let eighthIt = anotherBreadth(seventhIt);
-                console.log("eighthIt: ", eighthIt);
+                //console.log("eighthIt: ", eighthIt);
 
             }
 
@@ -218,7 +218,15 @@
             }
 
             driverFunct = () => {
-                let startingPos = [0,0]; //--------------CHANGE START POINT (pls keep within board)
+                let testStart = prompt("START POSITION:\nPlease provide an x (0-7) and y (0-7) coordinate; ex: 23 = coordinate [2,3]");
+                let strSplit = testStart.split("");
+                let testStartArray = [Number(strSplit[0]), Number(strSplit[1])];
+                console.log(testStartArray);
+                let testTarget = prompt("TARGET POSITION:\nPlease provide an x (0-7) and y (0-7) coordinate; ex: 54 = coordinate [5,4]");
+                let strTargSplit = testTarget.split("");
+                let testTargetArray = [Number(strTargSplit[0]), Number(strTargSplit[1])];
+                console.log(testTargetArray);
+                let startingPos = testStartArray; //--------------CHANGE START POINT (pls keep within board)
                 buildConsoleBoard();
                 buildBoard();
                 
@@ -227,7 +235,7 @@
                 fillingMovesIterator();
                 console.log(firstBoard.board);
                 console.log("root Knight: ", this.root);
-                knightMoves([7,6]); //------------------CHANGE TARGET POINT (pls keep within board)
+                knightMoves(testTargetArray); //------------------CHANGE TARGET POINT (pls keep within board)
                 
             }
         }
